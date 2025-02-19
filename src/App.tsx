@@ -15,16 +15,18 @@ import { Outlet, useNavigate } from "react-router";
 import { ConfigContext } from "./context/ConfigContext";
 import { darkTheme, lightTheme } from "./theme";
 
+const GITHUB_TOKEN = (import.meta as any).env.VITE_GITHUB_TOKEN  
+
 function App() {
   const [user, setUser] = React.useState<{
     login: string;
     avatar_url: string;
     url: string;
   }>();
-  const [token, setToken] = React.useState<string>();
+  const [token, setToken] = React.useState<string>(GITHUB_TOKEN);
   const [octokit, setOctokit] = React.useState<GitService | null>(null);
   const [openSettings, setOpenSettings] = React.useState<boolean>(false);
-  const [isDarkMode, setIsDarkMode] = React.useState<boolean>(false);
+  const [isDarkMode, setIsDarkMode] = React.useState<boolean>(true);
   const navigate = useNavigate();
 
   const onLogin = React.useCallback(() => {
@@ -51,15 +53,24 @@ function App() {
     }
   }, [token, navigate]);
 
+  const loadRef = React.useRef<boolean>(false);
   React.useEffect(() => {
-    setToken(localStorage.getItem("token") ?? undefined);
+    if (!loadRef.current ){
+      if (token){
+        onLogin();
+      }
+      loadRef.current = true
+    }
+  },[token,onLogin])
+  React.useEffect(() => {
+    setToken(GITHUB_TOKEN??localStorage.getItem("token") ?? undefined);
     setUser(JSON.parse(localStorage.getItem("user") || "{}"));
     if (localStorage.getItem("token")) {
       setOctokit(
         new GitService(
           (import.meta as any).env.VITE_GITHUB_API_URL ||
             "https://api.github.com",
-          localStorage.getItem("token") || ""
+            GITHUB_TOKEN|| localStorage.getItem("token") || ""
         )
       );
     }

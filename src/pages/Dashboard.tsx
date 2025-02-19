@@ -31,7 +31,7 @@ export const Dashboard: React.FC = () => {
     []
   );
   const [orderByDate, setOrderByDate] = React.useState<"Repository" | "Date">(
-    "Repository"
+    "Date"
   );
   const [order, setOrder] = React.useState<"asc" | "desc">("asc");
 

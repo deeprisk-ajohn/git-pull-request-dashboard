@@ -3,8 +3,8 @@ import { ConfigContext } from "../context/ConfigContext";
 import { Approvals } from "../models/Approvals";
 import { Avatar, Badge, Box, CircularProgress, Tooltip } from "@mui/material";
 import { useOnScreen } from "../hooks/useOnScreen";
-import { useQuery } from "@tanstack/react-query";
-
+import { useQuery } from "@tanstack/react-query"; 
+ 
 export type PullRequestsApprovalsProps = {
   owner: string;
   repo: string;
@@ -51,11 +51,16 @@ export const PullRequestsApprovals: React.FC<PullRequestsApprovalsProps> = ({
   const allApprovals = React.useMemo(
     () => approvals?.filter((approval) => approval.state !== "DISMISSED"),
     [approvals]
+  );  
+  const actualApprovals = React.useMemo(
+    () => approvals?.filter((approval) => approval.state ==="APPROVED"),
+    [approvals]
   );
 
   const approvalAvatars = React.useMemo(
     () =>
-      allApprovals?.map((approval) => (
+      {
+        const filteredApprovals =         allApprovals?.map((approval) => (
         <Tooltip
           key={approval.user.login}
           title={`${approval.state} by ${approval.user.login}`}
@@ -71,8 +76,24 @@ export const PullRequestsApprovals: React.FC<PullRequestsApprovalsProps> = ({
             />
           </Badge>
         </Tooltip>
-      )),
-    [allApprovals]
+      ))
+      if (actualApprovals.length<2){
+        filteredApprovals.push( 
+          <Badge
+            // {...getBadgeProps(approval.state)}
+            sx={{ height: "1em", display: "flex", alignItems: "center" }}
+          >
+            <Avatar
+              alt={'alarm'}
+              src={'/alarm.gif'}
+              sx={{ height: "1.5em", width: "1.5em" }}
+            />
+          </Badge> 
+        )
+      }
+      return filteredApprovals
+    },
+    [allApprovals,actualApprovals]
   );
 
   return (
@@ -93,7 +114,7 @@ export const PullRequestsApprovals: React.FC<PullRequestsApprovalsProps> = ({
         ) : (
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             {" "}
-            {approvals.length ? approvalAvatars : "No reviews"}{" "}
+            {approvalAvatars}
           </Box>
         )}
       </Box>
