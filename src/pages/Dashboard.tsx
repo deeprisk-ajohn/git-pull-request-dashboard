@@ -18,20 +18,36 @@ import {
 import Grid from "@mui/material/Grid2";
 import LandingPage from "./LandingPage";
 import { InputFilter } from "../components/InputFilter";
-import { useQueries } from "@tanstack/react-query";
+import {
+  QueryClient,
+  QueryClientConfig,
+  useQueries,
+} from "@tanstack/react-query";
 import { Navigate } from "react-router";
 import PRLoadingPage from "./PRLoadingPage";
 import { PullRequestFilters } from "../components/Dashboard/PullRequestFilters";
 import { FilterList } from "@mui/icons-material";
 import SortIconOutlined from "@mui/icons-material/Sort";
 
+const QueryClientParams: QueryClientConfig = {
+  defaultOptions: {
+    queries: {
+      refetchInterval: 1000 * 10,
+      staleTime: 1000 * 5,
+      networkMode: "online",
+    },
+  },
+};
+
+const queryClient = new QueryClient(QueryClientParams);
+
 export const Dashboard: React.FC = () => {
   const { octokit, repositorySettings } = React.useContext(ConfigContext);
   const [activeRepositories, setActiveRepositories] = React.useState<string[]>(
-    []
+    [],
   );
   const [orderByDate, setOrderByDate] = React.useState<"Repository" | "Date">(
-    "Date"
+    "Date",
   );
   const [order, setOrder] = React.useState<"asc" | "desc">("asc");
 
@@ -39,29 +55,31 @@ export const Dashboard: React.FC = () => {
     setActiveRepositories(
       Object.keys(repositorySettings)
         .filter((key) => repositorySettings[key])
-        .sort()
+        .sort(),
     );
   }, [repositorySettings]);
-
-  const { data, pending } = useQueries({
-    queries: activeRepositories.map((repo) => ({
-      queryKey: ["pulls", repo],
-      queryFn: async () => {
-        if (octokit) {
-          return octokit.getPullRequests(repo);
-        }
+  const { data, pending } = useQueries(
+    {
+      queries: activeRepositories.map((repo) => ({
+        queryKey: ["pulls", repo],
+        queryFn: async () => {
+          if (octokit) {
+            return octokit.getPullRequests(repo);
+          }
+        },
+        enabled: octokit !== undefined,
+      })),
+      combine: (results) => {
+        return {
+          data: results
+            .map((result) => result.data ?? ([] as PullRequest[]))
+            .flat(),
+          pending: results.some((result) => result.isLoading),
+        };
       },
-      enabled: octokit !== undefined,
-    })),
-    combine: (results) => {
-      return {
-        data: results
-          .map((result) => result.data ?? ([] as PullRequest[]))
-          .flat(),
-        pending: results.some((result) => result.isLoading),
-      };
     },
-  });
+    queryClient,
+  );
 
   const [filter, setFilter] = React.useState<string>("");
   const [showDrafts, setShowDrafts] = React.useState<boolean>(false);
@@ -93,7 +111,7 @@ export const Dashboard: React.FC = () => {
   }, [data, filter, showDrafts, orderByDate, order]);
 
   const [displayedPulls, setDisplayedPulls] = React.useState<PullRequest[]>(
-    filteredPulls as PullRequest[]
+    filteredPulls as PullRequest[],
   );
 
   if (!localStorage.getItem("token")) {
@@ -184,7 +202,7 @@ export const Dashboard: React.FC = () => {
                   <Grid key={pull.id} size={{ xl: 6, xs: 12 }}>
                     <PullRequestCard pr={pull as unknown as PullRequest} />
                   </Grid>
-                )
+                ),
             )}
           </Grid>
         </>
