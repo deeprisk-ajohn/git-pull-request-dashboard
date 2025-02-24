@@ -18,28 +18,13 @@ import {
 import Grid from "@mui/material/Grid2";
 import LandingPage from "./LandingPage";
 import { InputFilter } from "../components/InputFilter";
-import {
-  QueryClient,
-  QueryClientConfig,
-  useQueries,
-} from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 import { Navigate } from "react-router";
 import PRLoadingPage from "./PRLoadingPage";
 import { PullRequestFilters } from "../components/Dashboard/PullRequestFilters";
 import { FilterList } from "@mui/icons-material";
 import SortIconOutlined from "@mui/icons-material/Sort";
-
-const QueryClientParams: QueryClientConfig = {
-  defaultOptions: {
-    queries: {
-      refetchInterval: 1000 * 10,
-      staleTime: 1000 * 5,
-      networkMode: "online",
-    },
-  },
-};
-
-const queryClient = new QueryClient(QueryClientParams);
+import queryClient from "../service/queryClient";
 
 export const Dashboard: React.FC = () => {
   const { octokit, repositorySettings } = React.useContext(ConfigContext);

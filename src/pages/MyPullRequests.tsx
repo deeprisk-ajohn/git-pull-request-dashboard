@@ -7,6 +7,7 @@ import Grid from "@mui/material/Grid2";
 
 import PullRequestCard from "../components/Cards/PullRequestCard";
 import { Typography } from "@mui/material";
+import queryClient from "../service/queryClient";
 
 export const MyPullRequests: React.FC = () => {
   const { octokit, repositorySettings, user } = React.useContext(ConfigContext);
@@ -22,35 +23,38 @@ export const MyPullRequests: React.FC = () => {
     );
   }, [repositorySettings]);
 
-  const { data, pending } = useQueries({
-    queries: activeRepositories.map((repo) => ({
-      queryKey: ["pulls", repo],
-      queryFn: async () => {
-        if (octokit) {
-          return octokit.getPullRequests(repo);
-        }
+  const { data, pending } = useQueries(
+    {
+      queries: activeRepositories.map((repo) => ({
+        queryKey: ["pulls", repo],
+        queryFn: async () => {
+          if (octokit) {
+            return octokit.getPullRequests(repo);
+          }
+        },
+        enabled:
+          octokit !== undefined &&
+          activeRepositories.length > 0 &&
+          user !== undefined,
+      })),
+      combine: (results) => {
+        return {
+          data: results
+            .map((result) => result.data ?? [])
+            .flat()
+            .filter(
+              (pr) =>
+                pr.user?.login === user?.login ||
+                (pr.assignee as any)?.login === user?.login ||
+                pr.assignees?.some((a) => a.login === user?.login) ||
+                pr.requested_reviewers?.some((r) => r.login === user?.login),
+            ),
+          pending: results.some((result) => result.isLoading),
+        };
       },
-      enabled:
-        octokit !== undefined &&
-        activeRepositories.length > 0 &&
-        user !== undefined,
-    })),
-    combine: (results) => {
-      return {
-        data: results
-          .map((result) => result.data ?? [])
-          .flat()
-          .filter(
-            (pr) =>
-              pr.user?.login === user?.login ||
-              (pr.assignee as any)?.login === user?.login ||
-              pr.assignees?.some((a) => a.login === user?.login) ||
-              pr.requested_reviewers?.some((r) => r.login === user?.login),
-          ),
-        pending: results.some((result) => result.isLoading),
-      };
     },
-  });
+    queryClient,
+  );
 
   if (!user) {
     return (

@@ -4,6 +4,7 @@ import { useQueries } from "@tanstack/react-query";
 import { Box, Typography } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import IssueCard from "../components/IssueCard";
+import queryClient from "../service/queryClient";
 
 const IssuesPage: React.FC = () => {
   const { octokit, repositorySettings, user } = React.useContext(ConfigContext);
@@ -19,33 +20,36 @@ const IssuesPage: React.FC = () => {
     );
   }, [repositorySettings]);
 
-  const { data, pending } = useQueries({
-    queries: activeRepositories.map((repo) => ({
-      queryKey: ["issues", repo],
-      queryFn: async () => {
-        if (octokit) {
-          return octokit.getIssues(repo);
-        }
+  const { data, pending } = useQueries(
+    {
+      queries: activeRepositories.map((repo) => ({
+        queryKey: ["issues", repo],
+        queryFn: async () => {
+          if (octokit) {
+            return octokit.getIssues(repo);
+          }
+        },
+        enabled:
+          octokit !== undefined &&
+          activeRepositories.length > 0 &&
+          user !== undefined,
+      })),
+      combine: (results) => {
+        return {
+          data: results
+            .map((result) => result.data ?? [])
+            .flat()
+            .filter((issue) => !issue.pull_request)
+            .map((issue) => ({
+              ...issue,
+              repoName: issue.repository_url.split("repos/")[1],
+            })),
+          pending: results.some((result) => result.isLoading),
+        };
       },
-      enabled:
-        octokit !== undefined &&
-        activeRepositories.length > 0 &&
-        user !== undefined,
-    })),
-    combine: (results) => {
-      return {
-        data: results
-          .map((result) => result.data ?? [])
-          .flat()
-          .filter((issue) => !issue.pull_request)
-          .map((issue) => ({
-            ...issue,
-            repoName: issue.repository_url.split("repos/")[1],
-          })),
-        pending: results.some((result) => result.isLoading),
-      };
     },
-  });
+    queryClient,
+  );
 
   if (!user) {
     return (
