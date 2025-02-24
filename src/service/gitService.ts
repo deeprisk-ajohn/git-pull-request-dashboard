@@ -43,7 +43,7 @@ export class GitService {
 
   getOrganizations() {
     return rateLimiter.enqueue(() =>
-      this.octokit.orgs.listForAuthenticatedUser()
+      this.octokit.orgs.listForAuthenticatedUser(),
     );
   }
 
@@ -54,7 +54,7 @@ export class GitService {
         type: "all",
         per_page: 100,
         timeout: 5000,
-      })
+      }),
     );
 
     return repos
@@ -65,7 +65,7 @@ export class GitService {
   async getRepository(fullName: string) {
     const [owner, name] = fullName.split("/");
     const response = await rateLimiter.enqueue(() =>
-      this.octokit.repos.get({ owner, repo: name })
+      this.octokit.repos.get({ owner, repo: name }),
     );
 
     return response.data;
@@ -75,8 +75,8 @@ export class GitService {
     return rateLimiter.enqueue(() =>
       this.octokit.paginate(
         this.octokit.activity.listReposStarredByAuthenticatedUser,
-        { per_page: 100, timeout: 5000 }
-      )
+        { per_page: 100, timeout: 5000 },
+      ),
     );
   }
 
@@ -86,7 +86,7 @@ export class GitService {
         per_page: 100,
         timeout: 5000,
         type: "owner",
-      })
+      }),
     );
   }
 
@@ -99,7 +99,7 @@ export class GitService {
           ref: `pull/${prNumber}/head`,
           filter: "latest",
         }),
-      true
+      true,
     );
   }
 
@@ -111,7 +111,7 @@ export class GitService {
           repo,
           pull_number: prNumber,
         }),
-      true
+      true,
     );
     return mergeConflicts.data;
   }
@@ -124,7 +124,7 @@ export class GitService {
           repo,
           pull_number: prNumber,
         }),
-      true
+      true,
     );
 
     if (
@@ -147,8 +147,8 @@ export class GitService {
           }
           return acc;
         },
-        {} as Record<string, any>
-      )
+        {} as Record<string, any>,
+      ),
     );
   }
 
@@ -159,7 +159,7 @@ export class GitService {
         repo,
         state: "open",
         per_page: 100,
-      })
+      }),
     );
   }
 }

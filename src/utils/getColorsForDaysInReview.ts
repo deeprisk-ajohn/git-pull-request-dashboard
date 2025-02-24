@@ -5,7 +5,7 @@ export const getColorForDaysInReview = (createdAt: Date | undefined) => {
 
   const today = new Date();
   const daysInReview = Math.floor(
-    (today.getTime() - new Date(createdAt).getTime()) / (1000 * 3600 * 24)
+    (today.getTime() - new Date(createdAt).getTime()) / (1000 * 3600 * 24),
   );
 
   if (daysInReview < 3) return green[500];

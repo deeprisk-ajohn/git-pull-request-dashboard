@@ -56,13 +56,13 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({ name }) => {
 
   const oldestPr = useMemo(() => {
     return pulls?.sort(
-      (prA, prB) => prA.created_at.getTime() - prB.created_at.getTime()
+      (prA, prB) => prA.created_at.getTime() - prB.created_at.getTime(),
     )[0];
   }, [pulls]);
 
   const badgeColor = useMemo(
     () => getColorForDaysInReview(oldestPr?.created_at),
-    [oldestPr]
+    [oldestPr],
   );
 
   const date = useMemo(
@@ -70,10 +70,10 @@ export const RepositoryCard: React.FC<RepositoryCardProps> = ({ name }) => {
       oldestPr?.created_at
         ? Math.floor(
             (new Date().getTime() - oldestPr?.created_at?.getTime()) /
-              (1000 * 3600 * 24)
+              (1000 * 3600 * 24),
           )
         : 0,
-    [oldestPr]
+    [oldestPr],
   );
 
   const repo = useMemo(() => pulls?.[0]?.base?.repo, [pulls]);

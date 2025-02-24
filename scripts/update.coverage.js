@@ -14,12 +14,12 @@ const repositories = fs.readdirSync(coveragePath).flatMap((owner) =>
       path: path.resolve(coveragePath, repo),
       report: path.resolve(coveragePath, repo, "report.json"),
       coverage: path.resolve(coveragePath, repo, "coverage-summary.json"),
-    }))
+    })),
 );
 
 const parsedSummary = fs.existsSync(parsedSummaryPath)
   ? JSON.parse(
-      lz.decompressFromBase64(fs.readFileSync(parsedSummaryPath, "utf-8"))
+      lz.decompressFromBase64(fs.readFileSync(parsedSummaryPath, "utf-8")),
     )
   : {};
 
@@ -43,10 +43,14 @@ repositories.forEach((repo) => {
 
       return acc;
     },
-    { current: {}, previous: {}, diff: {} }
+    { current: {}, previous: {}, diff: {} },
   );
 
-  if (Object.keys(updatedCoverage.diff).some(key => updatedCoverage.diff[key] !== 0)) {
+  if (
+    Object.keys(updatedCoverage.diff).some(
+      (key) => updatedCoverage.diff[key] !== 0,
+    )
+  ) {
     console.log(`Updated coverage for ${repo.name}:`, updatedCoverage);
   }
 
@@ -60,5 +64,5 @@ repositories.forEach((repo) => {
 fs.writeFileSync(
   parsedSummaryPath,
   lz.compressToBase64(JSON.stringify(parsedSummary)),
-  "utf-8"
+  "utf-8",
 );

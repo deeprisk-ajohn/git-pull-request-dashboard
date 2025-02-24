@@ -34,5 +34,5 @@ export default tseslint.config(
       "eol-last": ["error", "always"],
       "max-len": ["error", { code: 350 }],
     },
-  }
+  },
 );

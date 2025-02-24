@@ -33,7 +33,7 @@ export const SettingsDrawer: React.FC<SettingsDrawerProps> = ({
       orgs.map((org) => (
         <RepoSettingAccordion key={org.id} org={org} type="org" />
       )),
-    [orgs]
+    [orgs],
   );
 
   const handleClose = React.useCallback(() => {

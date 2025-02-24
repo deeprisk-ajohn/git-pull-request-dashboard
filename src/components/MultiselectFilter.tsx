@@ -52,7 +52,7 @@ export const MultiselectFilter: React.FC<MultiselectFilterProps> = ({
 
   const id = React.useMemo(
     () => name.split(" ").join("-").toLowerCase(),
-    [name]
+    [name],
   );
   const labelId = React.useMemo(() => `${id}-label`, [id]);
 

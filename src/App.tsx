@@ -15,7 +15,7 @@ import { Outlet, useNavigate } from "react-router";
 import { ConfigContext } from "./context/ConfigContext";
 import { darkTheme, lightTheme } from "./theme";
 
-const GITHUB_TOKEN = (import.meta as any).env.VITE_GITHUB_TOKEN  
+const GITHUB_TOKEN = (import.meta as any).env.VITE_GITHUB_TOKEN;
 
 function App() {
   const [user, setUser] = React.useState<{
@@ -34,7 +34,7 @@ function App() {
       const octoKit = new GitService(
         (import.meta as any).env.VITE_GITHUB_API_URL ||
           "https://api.github.com",
-        token
+        token,
       );
       octoKit.testAuthentication().then((user) => {
         if (user.status !== 200) {
@@ -55,23 +55,23 @@ function App() {
 
   const loadRef = React.useRef<boolean>(false);
   React.useEffect(() => {
-    if (!loadRef.current ){
-      if (token){
+    if (!loadRef.current) {
+      if (token) {
         onLogin();
       }
-      loadRef.current = true
+      loadRef.current = true;
     }
-  },[token,onLogin])
+  }, [token, onLogin]);
   React.useEffect(() => {
-    setToken(GITHUB_TOKEN??localStorage.getItem("token") ?? undefined);
+    setToken(GITHUB_TOKEN ?? localStorage.getItem("token") ?? undefined);
     setUser(JSON.parse(localStorage.getItem("user") || "{}"));
     if (localStorage.getItem("token")) {
       setOctokit(
         new GitService(
           (import.meta as any).env.VITE_GITHUB_API_URL ||
             "https://api.github.com",
-            GITHUB_TOKEN|| localStorage.getItem("token") || ""
-        )
+          GITHUB_TOKEN || localStorage.getItem("token") || "",
+        ),
       );
     }
 
@@ -103,7 +103,7 @@ function App() {
         return newState;
       });
     },
-    []
+    [],
   );
 
   const saveRawSettings = React.useCallback(
@@ -113,12 +113,12 @@ function App() {
       setRepositorySettings(settings);
       localStorage.setItem("REPOSITORY_CONFIG", JSON.stringify(settings));
     },
-    []
+    [],
   );
 
   React.useEffect(() => {
     const repositoryConfig = JSON.parse(
-      localStorage.getItem("REPOSITORY_CONFIG") ?? "{}"
+      localStorage.getItem("REPOSITORY_CONFIG") ?? "{}",
     );
     setRepositorySettings(repositoryConfig);
   }, []);

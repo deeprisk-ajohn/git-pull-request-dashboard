@@ -84,7 +84,7 @@ export const IssueCard: React.FC<IssueCardProps> = ({ issue }) => {
         </Tooltip>
       </Box>
     ),
-    [expanded, issue.html_url, issue.id]
+    [expanded, issue.html_url, issue.id],
   );
 
   return (

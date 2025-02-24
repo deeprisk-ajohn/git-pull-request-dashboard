@@ -8,14 +8,14 @@ import IssueCard from "../components/IssueCard";
 const IssuesPage: React.FC = () => {
   const { octokit, repositorySettings, user } = React.useContext(ConfigContext);
   const [activeRepositories, setActiveRepositories] = React.useState<string[]>(
-    []
+    [],
   );
 
   useEffect(() => {
     setActiveRepositories(
       Object.keys(repositorySettings)
         .filter((key) => repositorySettings[key])
-        .sort()
+        .sort(),
     );
   }, [repositorySettings]);
 
@@ -88,7 +88,7 @@ const IssuesPage: React.FC = () => {
                 issue.labels.map((label) =>
                   typeof label === "string"
                     ? { name: label }
-                    : { name: label.name || "" }
+                    : { name: label.name || "" },
                 ) as { name: string }[]
               }
               body={issue.body ?? ""}

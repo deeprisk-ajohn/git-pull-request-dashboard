@@ -11,14 +11,14 @@ import { Typography } from "@mui/material";
 export const MyPullRequests: React.FC = () => {
   const { octokit, repositorySettings, user } = React.useContext(ConfigContext);
   const [activeRepositories, setActiveRepositories] = React.useState<string[]>(
-    []
+    [],
   );
 
   useEffect(() => {
     setActiveRepositories(
       Object.keys(repositorySettings)
         .filter((key) => repositorySettings[key])
-        .sort()
+        .sort(),
     );
   }, [repositorySettings]);
 
@@ -45,7 +45,7 @@ export const MyPullRequests: React.FC = () => {
               pr.user?.login === user?.login ||
               (pr.assignee as any)?.login === user?.login ||
               pr.assignees?.some((a) => a.login === user?.login) ||
-              pr.requested_reviewers?.some((r) => r.login === user?.login)
+              pr.requested_reviewers?.some((r) => r.login === user?.login),
           ),
         pending: results.some((result) => result.isLoading),
       };
@@ -88,7 +88,7 @@ export const MyPullRequests: React.FC = () => {
             <Grid key={pull.id} size={{ xl: 6, xs: 12 }}>
               <PullRequestCard pr={pull as unknown as PullRequest} />
             </Grid>
-          )
+          ),
       )}
     </Grid>
   );

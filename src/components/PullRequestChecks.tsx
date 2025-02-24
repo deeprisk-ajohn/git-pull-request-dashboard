@@ -43,9 +43,9 @@ export const PullRequestChecks: React.FC<PullRequestChecksProps> = ({
     () =>
       checks.every(
         (check) =>
-          check.conclusion === "success" || check.conclusion === "skipped"
+          check.conclusion === "success" || check.conclusion === "skipped",
       ),
-    [checks]
+    [checks],
   );
 
   return (

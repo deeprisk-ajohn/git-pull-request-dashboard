@@ -82,7 +82,7 @@ export const PullRequestFilters: React.FC<PullRequestFiltersProps> = ({
       if (
         filterValues.reviewers.length > 0 &&
         !pr.requested_reviewers.some((r) =>
-          filterValues.reviewers.includes(r.login)
+          filterValues.reviewers.includes(r.login),
         )
       )
         return false;
@@ -145,7 +145,7 @@ export const PullRequestFilters: React.FC<PullRequestFiltersProps> = ({
     {
       name: "Include Labels",
       options: labels.filter(
-        (label) => !filterValues.excludeLabels.includes(label)
+        (label) => !filterValues.excludeLabels.includes(label),
       ),
       onChange: (includeLabels: string[]) =>
         onFilterChange("includeLabels", includeLabels),
@@ -153,7 +153,7 @@ export const PullRequestFilters: React.FC<PullRequestFiltersProps> = ({
     {
       name: "Exclude Lables",
       options: labels.filter(
-        (label) => !filterValues.includeLabels.includes(label)
+        (label) => !filterValues.includeLabels.includes(label),
       ),
       onChange: (excludeLabels: string[]) =>
         onFilterChange("excludeLabels", excludeLabels),

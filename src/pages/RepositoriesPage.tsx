@@ -8,14 +8,14 @@ import { RepositoryCard } from "../components/Cards/RepositoryCard";
 export const RepositoriesPage: React.FC = () => {
   const { repositorySettings, user } = React.useContext(ConfigContext);
   const [activeRepositories, setActiveRepositories] = React.useState<string[]>(
-    []
+    [],
   );
 
   useEffect(() => {
     setActiveRepositories(
       Object.keys(repositorySettings)
         .filter((key) => repositorySettings[key])
-        .sort()
+        .sort(),
     );
   }, [repositorySettings]);
 

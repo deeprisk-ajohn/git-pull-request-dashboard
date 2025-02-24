@@ -113,7 +113,7 @@ const PullRequestCard: React.FC<PullRequestCardProps> = ({ pr }) => {
             <Chip
               label={Math.floor(
                 (new Date().getTime() - new Date(pr.created_at).getTime()) /
-                  (1000 * 3600 * 24)
+                  (1000 * 3600 * 24),
               )}
               sx={{ bgcolor: getColorForDaysInReview(pr.created_at) }}
               size="small"

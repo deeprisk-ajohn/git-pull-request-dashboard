@@ -19,7 +19,7 @@ export const InputFilter: React.FC<InputFilterProps> = ({
       setFilter(event.target.value);
       onChange(event.target.value);
     },
-    [onChange]
+    [onChange],
   );
 
   return (
